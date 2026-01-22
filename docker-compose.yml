@@ -1,0 +1,48 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: moodle-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MARIADB_DATABASE: ${DB_NAME:-moodle}
+      MARIADB_USER: ${DB_USER:-moodle}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-moodlepassword}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+      - ./PROD-mysql-moodle_2025-03-11.sql:/sql-import/moodle-import.sql:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 300s
+
+  moodle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moodle-app
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-moodle}
+      DB_USER: ${DB_USER:-moodle}
+      DB_PASSWORD: ${DB_PASSWORD:-moodlepassword}
+      MOODLE_WWWROOT: ${MOODLE_WWWROOT:-http://localhost:8081}
+      MOODLE_DATAROOT: /var/www/moodledata
+    volumes:
+      - moodledata:/var/www/moodledata
+    ports:
+      - "8081:80"
+
+volumes:
+  mariadb_data:
+  moodledata:

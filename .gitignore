@@ -1,0 +1,19 @@
+# SQL database dumps - keep out of repo
+*.sql
+PROD-*.sql
+
+# Environment files with secrets
+.env
+
+# Docker volumes (if stored locally)
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
