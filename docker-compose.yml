@@ -38,11 +38,18 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-moodlepassword}
       MOODLE_WWWROOT: ${MOODLE_WWWROOT:-http://localhost:8081}
       MOODLE_DATAROOT: /var/www/moodledata
+      PATH: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     volumes:
       - moodledata:/var/www/moodledata
+      - claude_config:/root/.claude
+      - claude_local:/root/.local
+      - ./plugins/psaelmsync:/var/www/html/local/psaelmsync
+      - ./themes/bcgovpsa:/var/www/html/theme/bcgovpsa
     ports:
       - "8081:80"
 
 volumes:
   mariadb_data:
   moodledata:
+  claude_config:
+  claude_local:

@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     zlib1g-dev \
     default-mysql-client \
+    curl \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure and install PHP extensions required by Moodle
@@ -68,16 +70,7 @@ WORKDIR /var/www/html
 RUN git clone --depth 1 --branch MOODLE_405_STABLE https://github.com/moodle/moodle.git . \
     && rm -rf .git
 
-# Clone plugins
-# psaelmsync - local plugin
-RUN git clone https://github.com/PSA-Corporate-Learning-Branch/psaelmsync.git \
-    /var/www/html/local/psaelmsync \
-    && rm -rf /var/www/html/local/psaelmsync/.git
-
-# bcgovpsa - theme plugin
-RUN git clone https://github.com/bcgov/bcgovpsa-moodle.git \
-    /var/www/html/theme/bcgovpsa \
-    && rm -rf /var/www/html/theme/bcgovpsa/.git
+# Plugin and theme directories will be mounted as volumes for development
 
 # Create moodledata directory
 RUN mkdir -p /var/www/moodledata \
