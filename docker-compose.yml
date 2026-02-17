@@ -11,7 +11,7 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d:ro
-      - ./PROD-mysql-moodle_2025-03-11.sql:/sql-import/moodle-import.sql:ro
+      - ./moodle-prod.sql:/sql-import/moodle-import.sql:ro
     ports:
       - "3306:3306"
     healthcheck:
@@ -38,11 +38,11 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-moodlepassword}
       MOODLE_WWWROOT: ${MOODLE_WWWROOT:-http://localhost:8081}
       MOODLE_DATAROOT: /var/www/moodledata
-      PATH: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      PATH: /home/dev/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     volumes:
       - moodledata:/var/www/moodledata
-      - claude_config:/root/.claude
-      - claude_local:/root/.local
+      - claude_config:/home/dev/.claude
+      - claude_local:/home/dev/.local
       - ./plugins/psaelmsync:/var/www/html/local/psaelmsync
       - ./themes/bcgovpsa:/var/www/html/theme/bcgovpsa
     ports:

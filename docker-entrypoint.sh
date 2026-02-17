@@ -3,19 +3,25 @@ set -e
 
 echo "Starting Moodle container initialization..."
 
-# Install Claude Code CLI if not already installed
-if [ ! -f /root/.local/bin/claude ]; then
-    echo "Installing Claude Code CLI..."
-    curl -fsSL https://claude.ai/install.sh | bash
-    echo "Claude Code installed. Run 'claude' to authenticate."
+# Ensure dev user owns their home directory volumes
+chown -R dev:dev /home/dev/.claude /home/dev/.local 2>/dev/null || true
+
+# Install Claude Code CLI for dev user if not already installed
+if [ ! -f /home/dev/.local/bin/claude ]; then
+    echo "Installing Claude Code CLI for dev user..."
+    su - dev -c 'curl -fsSL https://claude.ai/install.sh | bash'
+    echo "Claude Code installed. Run 'claude' as dev user to authenticate."
 else
     echo "Claude Code CLI already installed."
 fi
 
 # Ensure claude is in PATH via symlink
-if [ -f /root/.local/bin/claude ] && [ ! -f /usr/local/bin/claude ]; then
-    ln -sf /root/.local/bin/claude /usr/local/bin/claude
+if [ -f /home/dev/.local/bin/claude ] && [ ! -f /usr/local/bin/claude ]; then
+    ln -sf /home/dev/.local/bin/claude /usr/local/bin/claude
 fi
+
+# Give dev user write access to plugin/theme directories
+chown -R dev:www-data /var/www/html/local/psaelmsync /var/www/html/theme/bcgovpsa 2>/dev/null || true
 
 # Generate config.php from template if it doesn't exist
 if [ ! -f /var/www/html/config.php ]; then

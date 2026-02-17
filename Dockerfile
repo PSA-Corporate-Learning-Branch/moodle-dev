@@ -19,7 +19,12 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     curl \
     ca-certificates \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
+
+# Create dev user for Claude Code usage
+RUN useradd -m -s /bin/bash -G www-data dev \
+    && echo "dev ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Configure and install PHP extensions required by Moodle
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
