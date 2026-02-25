@@ -24,7 +24,7 @@ services:
   moodle:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Containerfile
     container_name: moodle-app
     restart: unless-stopped
     depends_on:
@@ -44,6 +44,9 @@ services:
       - claude_config:/home/dev/.claude
       - claude_local:/home/dev/.local
       - ./plugins/psaelmsync:/var/www/html/local/psaelmsync
+      - ./plugins/githubsync:/var/www/html/local/githubsync
+      - ./plugins/pathcurator:/var/www/html/mod/pathcurator
+      - ./plugins/course_search:/var/www/html/blocks/course_search
       - ./themes/bcgovpsa:/var/www/html/theme/bcgovpsa
     ports:
       - "8081:80"

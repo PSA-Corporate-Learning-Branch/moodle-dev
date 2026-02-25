@@ -21,7 +21,9 @@ if [ -f /home/dev/.local/bin/claude ] && [ ! -f /usr/local/bin/claude ]; then
 fi
 
 # Give dev user write access to plugin/theme directories
-chown -R dev:www-data /var/www/html/local/psaelmsync /var/www/html/theme/bcgovpsa 2>/dev/null || true
+chown -R dev:www-data /var/www/html/local/psaelmsync /var/www/html/local/githubsync \
+    /var/www/html/mod/pathcurator /var/www/html/blocks/course_search \
+    /var/www/html/theme/bcgovpsa 2>/dev/null || true
 
 # Generate config.php from template if it doesn't exist
 if [ ! -f /var/www/html/config.php ]; then

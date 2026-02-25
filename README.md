@@ -1,19 +1,22 @@
 # PSA Moodle Development Environment
 
-Docker-based Moodle 4.5 development environment for BC Gov PSA.
+Podman-based Moodle 4.5 development environment for BC Gov PSA.
 
 ## Components
 
-| Component | Location | Description |
-|-----------|----------|-------------|
-| **psaelmsync** | `plugins/psaelmsync/` | Local plugin for ELM enrollment synchronization |
-| **bcgovpsa** | `themes/bcgovpsa/` | BC Gov PSA Boost child theme |
+| Component | Location | Type | Description |
+|-----------|----------|------|-------------|
+| **psaelmsync** | `plugins/psaelmsync/` | `local_psaelmsync` | ELM enrollment synchronization |
+| **githubsync** | `plugins/githubsync/` | `local_githubsync` | GitHub-based course sync |
+| **pathcurator** | `plugins/pathcurator/` | `mod_pathcurator` | Learning path curation activity |
+| **course_search** | `plugins/course_search/` | `block_course_search` | Course search block |
+| **bcgovpsa** | `themes/bcgovpsa/` | theme | BC Gov PSA Boost child theme |
 
-Both are mounted as volumes for live development—edit locally, changes reflect immediately.
+All are mounted as volumes for live development—edit locally, changes reflect immediately.
 
 ## Prerequisites
 
-- Docker and Docker Compose
+- Podman and Podman Compose
 - Production SQL dump: `PROD-mysql-moodle_2025-03-11.sql` (place in project root)
 
 ## Quick Start
@@ -21,12 +24,12 @@ Both are mounted as volumes for live development—edit locally, changes reflect
 ```bash
 git clone <repository-url>
 cd moodle-dev
-docker compose up -d
+podman compose up -d
 ```
 
 First run takes 10-15 minutes for the ~900MB database import. Monitor with:
 ```bash
-docker compose logs -f mariadb
+podman compose logs -f mariadb
 ```
 
 Access Moodle at **http://localhost:8081**
@@ -39,19 +42,19 @@ Edit files in `plugins/` or `themes/` directories. Changes appear immediately in
 
 After modifying `version.php` or database schema:
 ```bash
-docker compose exec moodle php /var/www/html/admin/cli/upgrade.php
+podman compose exec moodle php /var/www/html/admin/cli/upgrade.php
 ```
 
 Purge caches when needed:
 ```bash
-docker compose exec moodle php /var/www/html/admin/cli/purge_caches.php
+podman compose exec moodle php /var/www/html/admin/cli/purge_caches.php
 ```
 
 ### Claude Code
 
 Claude Code CLI is pre-installed in the container. First use requires authentication:
 ```bash
-docker compose exec moodle claude
+podman compose exec moodle claude
 ```
 
 Credentials persist across container restarts.
@@ -59,24 +62,24 @@ Credentials persist across container restarts.
 ### Container Access
 
 ```bash
-docker compose exec moodle bash
+podman compose exec moodle bash
 ```
 
 ### Database Access
 
 ```bash
-docker compose exec mariadb mysql -u moodle -pmoodlepassword moodle
+podman compose exec mariadb mysql -u moodle -pmoodlepassword moodle
 ```
 
 ## Commands Reference
 
 | Action | Command |
 |--------|---------|
-| Start | `docker compose up -d` |
-| Stop | `docker compose down` |
-| Logs | `docker compose logs -f moodle` |
-| Rebuild | `docker compose build moodle && docker compose up -d` |
-| Reset all data | `docker compose down -v` |
+| Start | `podman compose up -d` |
+| Stop | `podman compose down` |
+| Logs | `podman compose logs -f moodle` |
+| Rebuild | `podman compose build moodle && podman compose up -d` |
+| Reset all data | `podman compose down -v` |
 
 ## Configuration
 
@@ -95,7 +98,7 @@ MOODLE_WWWROOT=http://localhost:8081
 To start without the production database:
 
 1. Remove or rename `PROD-mysql-moodle_2025-03-11.sql`
-2. Run `docker compose up -d`
+2. Run `podman compose up -d`
 3. Complete installation wizard at http://localhost:8081
 
 ## Project Structure
@@ -103,13 +106,16 @@ To start without the production database:
 ```
 moodle-dev/
 ├── plugins/
-│   └── psaelmsync/         # ELM sync plugin (mounted volume)
+│   ├── psaelmsync/            # ELM sync plugin (mounted volume)
+│   ├── githubsync/            # GitHub course sync (mounted volume)
+│   ├── pathcurator/           # Learning path activity (mounted volume)
+│   └── course_search/         # Course search block (mounted volume)
 ├── themes/
-│   └── bcgovpsa/           # PSA theme (mounted volume)
-├── db-init/                # Database initialization scripts
-├── docker-compose.yml
-├── Dockerfile
-├── docker-entrypoint.sh
+│   └── bcgovpsa/              # PSA theme (mounted volume)
+├── db-init/                   # Database initialization scripts
+├── compose.yml
+├── Containerfile
+├── entrypoint.sh
 └── config.php.template
 ```
 

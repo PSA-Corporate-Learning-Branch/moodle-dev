@@ -86,13 +86,13 @@ RUN mkdir -p /var/www/moodledata \
 RUN chown -R www-data:www-data /var/www/html
 
 # Copy entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Copy config template
 COPY config.php.template /var/www/html/config.php.template
 
 EXPOSE 80
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["apache2-foreground"]

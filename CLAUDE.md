@@ -4,40 +4,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Docker-based Moodle 4.5 development environment for BC Gov PSA. Contains two custom components mounted as volumes for active development:
+Podman-based Moodle 4.5 development environment for BC Gov PSA. Custom components are cloned into `plugins/` and `themes/` and volume-mounted into the container for active development:
 
-- **psaelmsync** (`plugins/psaelmsync/`) - Local plugin that syncs enrollment data from ELM (Enterprise Learning Management) and sends completion data back via CData API
+**Plugins** (all under `plugins/`):
+- **psaelmsync** (`local_psaelmsync`) - Syncs enrollment data from ELM and sends completion data back via CData API
+- **githubsync** (`local_githubsync`) - GitHub-based course sync plugin
+- **pathcurator** (`mod_pathcurator`) - Activity module for curating learning paths
+- **course_search** (`block_course_search`) - Block plugin for course search
+
+**Theme:**
 - **bcgovpsa** (`themes/bcgovpsa/`) - Boost child theme for BC Gov PSA branding
 
 ## Development Commands
 
 ```bash
 # Start environment
-docker compose up -d
+podman compose up -d
 
 # Stop environment
-docker compose down
+podman compose down
 
-# Rebuild after Dockerfile changes
-docker compose build moodle && docker compose down && docker compose up -d
+# Rebuild after Containerfile changes
+podman compose build moodle && podman compose down && podman compose up -d
 
 # Access container shell
-docker compose exec moodle bash
+podman compose exec moodle bash
 
 # Run Moodle upgrade (after plugin changes)
-docker compose exec moodle php /var/www/html/admin/cli/upgrade.php
+podman compose exec moodle php /var/www/html/admin/cli/upgrade.php
 
 # Purge caches
-docker compose exec moodle php /var/www/html/admin/cli/purge_caches.php
+podman compose exec moodle php /var/www/html/admin/cli/purge_caches.php
 
 # View logs
-docker compose logs -f moodle
+podman compose logs -f moodle
 
 # Reset everything (deletes all data)
-docker compose down -v
+podman compose down -v
 
 # Access MariaDB
-docker compose exec mariadb mysql -u moodle -p moodle
+podman compose exec mariadb mysql -u moodle -p moodle
 ```
 
 ## psaelmsync Plugin Architecture
