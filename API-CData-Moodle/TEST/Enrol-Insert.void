@@ -7,8 +7,6 @@ generatedAt: 2026-02-05T01:43:53.002Z
 
 # Enrol Insert
 
-Write your documentation directly in here.
-
 ```void
 ---
 type: request
