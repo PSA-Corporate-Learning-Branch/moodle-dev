@@ -23,7 +23,7 @@ content:
   - type: url
     attrs:
       uid: cd5e60fb-babb-4c1f-88b4-a9c402b5ccda
-    content: https://analytics-api.psa.gov.bc.ca/apiserver/api.rsc/Datamart_ELM_course_enrollment_info?&%24filter=date_created+gt+%272026-02-17+06%3A00%3A00%27
+    content: https://analytics-api.psa.gov.bc.ca/apiserver/api.rsc/Datamart_ELM_course_enrollment_info?&%24filter=date_created+gt+%272026-03-28+06%3A00%3A00%27
 ---
 ```
 ```void
