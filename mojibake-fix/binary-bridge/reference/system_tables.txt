@@ -1,0 +1,11 @@
+analytics_indicator_calc
+analytics_models
+analytics_models_log
+analytics_predict_samples
+analytics_prediction_actions
+analytics_predictions
+analytics_train_samples
+analytics_used_analysables
+analytics_used_files
+log
+logstore_standard_log

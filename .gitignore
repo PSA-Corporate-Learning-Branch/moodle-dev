@@ -9,6 +9,9 @@ themes/
 # Environment files with secrets
 .env
 
+# Superseded mojibake scripts - contain hardcoded DB credentials
+mojibake-fix/archive/
+
 # Docker volumes (if stored locally)
 data/
 
