@@ -47,6 +47,27 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Enable Apache modules
 RUN a2enmod rewrite headers
 
+# Deny web access to files that are never meant to be served. Plugins and themes are
+# volume-mounted from the host, so each brings its own .git directory into the docroot;
+# without this, the full source history is downloadable via .git/HEAD, .git/index etc.
+RUN { \
+    echo '# Version control metadata anywhere under the docroot.'; \
+    echo '<DirectoryMatch "/\.(git|svn|hg|bzr)(/|$)">'; \
+    echo '    Require all denied'; \
+    echo '</DirectoryMatch>'; \
+    echo ''; \
+    echo '# Dotfiles. Matches the basename, so .well-known/ challenge files still resolve.'; \
+    echo '<FilesMatch "^\.">'; \
+    echo '    Require all denied'; \
+    echo '</FilesMatch>'; \
+    echo ''; \
+    echo '# Extensions PHP will not parse, and would therefore serve as cleartext source.'; \
+    echo '<FilesMatch "\.(backup|bak|orig|rej|save|swp|swo|dist|sql|log)$">'; \
+    echo '    Require all denied'; \
+    echo '</FilesMatch>'; \
+} > /etc/apache2/conf-available/deny-sensitive-files.conf \
+    && a2enconf deny-sensitive-files
+
 # Configure PHP for Moodle
 RUN { \
     echo 'max_execution_time = 300'; \
